@@ -119,11 +119,12 @@ export const Content = styled.div`
     display: flex;
     min-height: 180px;
     flex-direction: column;
-    background-color: #fafafa;
+    background-color: #fff;
     border-radius: 4px;
     padding: 10px;
     transition: all 0.2s linear;
     border: 1px #f5f5f5 solid;
+    box-shadow: 0 0 15px rgba(34,67,80, 0.1);
 
     span{
       font-size: 14px;

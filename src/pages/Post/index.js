@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AiOutlineLoading } from 'react-icons/ai';
 import logo from '../../img/stethoscope.svg';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router'
 
 import api from '../../services/api';
 
@@ -20,13 +21,13 @@ export default class Post extends Component {
     uf: '',
     city: '',
     specs: [],
+    redirect: false 
   }
 
   async componentDidMount(){
     const cont = await api.get('/specialtie');
 
     const doc = cont.data;
-    console.log(cont);
     this.setState({
       specialties: doc,
       loading: false,
@@ -35,31 +36,39 @@ export default class Post extends Component {
 
   handleNameChange = e => {
     this.setState({ name: e.target.value, error: null });
-    console.log(this.state.name);
   };
   handleCrmChange = e => {
     this.setState({ crm: e.target.value, error: null });
-    console.log(this.state.crm);
   };
   handlePhoneChange = e => {
     this.setState({ phone: e.target.value, error: null });
-    console.log(this.state.phone);
   };
   handleUfChange = e => {
     this.setState({ uf: e.target.value, error: null });
-    console.log(this.state.uf);
   };
   handleCityChange = e => {
     this.setState({ city: e.target.value, error: null });
-    console.log(this.state.city);
   };
 
-  handleTest = async action => {
-    const  {specs}  = this.state;
+  handleCheckbox = async action => {
 
+    const  {specs}  = this.state;
+    const convert = specs;
+
+    const index = convert.indexOf(action);
+
+    if (index === -1){
+      convert.push(action)
       await this.setState({
-        specs: [ ...specs, action]
+        specs: convert,
     })
+    }else{
+      convert.splice(index,1)
+      await this.setState({
+        specs: convert,
+    })
+    }
+
   };
 
     handleSubmit = async event => {
@@ -89,6 +98,10 @@ export default class Post extends Component {
 
   render() {
     const { loading, specialties, name, crm, phone, uf, city } = this.state;
+
+    if(this.state.redirect) {
+      return <Redirect to="/login/" />
+    }
 
     if (loading) {
       return (
@@ -134,7 +147,7 @@ export default class Post extends Component {
             {
               specialties.map(e => (
                 <div>
-                <input onFocus={() => this.handleTest(e.id)} type="checkbox" id={e.specialtie_name} key={e.id} name={e.specialtie_name} ></input>
+                <input onClick={() => this.handleCheckbox(e.id)} type="checkbox" id={e.specialtie_name} key={e.id} name={e.specialtie_name} ></input>
                 <label htmlFor={e.id}>{e.specialtie_name}</ label><br/>
                 </div>
               ))
