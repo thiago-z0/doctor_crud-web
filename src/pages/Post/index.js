@@ -75,33 +75,36 @@ export default class Post extends Component {
     event.preventDefault();
     const { specs, name, crm, phone, uf, city } = this.state;
 
-    const req =  api.post('/doctor', {
-      name,
-      crm,
-      phone,
-      state: uf,
-      city,
-      specialties: specs,
-    })
+    if (name && crm && phone && uf && city !== null && specs.length >= 2){
 
-    this.setState({
-      name: '',
-    crm: '',
-    phone: '',
-    uf: '',
-    city: '',
-    specs: [],
-    });
+      api.post('/doctor', {
+        name,
+        crm,
+        phone,
+        state: uf,
+        city,
+        specialties: specs,
+      })
+  
+      this.setState({
+        name: '',
+      crm: '',
+      phone: '',
+      uf: '',
+      city: '',
+      specs: [],
+      redirect: true, 
+      });
+      alert('Cadastrado com Sucesso!')
+    }else{
+      alert('Não foi Possivel Cadastrar!')
+    }
 
   }
 
 
   render() {
     const { loading, specialties, name, crm, phone, uf, city } = this.state;
-
-    if(this.state.redirect) {
-      return <Redirect to="/login/" />
-    }
 
     if (loading) {
       return (
@@ -146,8 +149,8 @@ export default class Post extends Component {
             <span>Selecione ao menos 2</span>
             {
               specialties.map(e => (
-                <div>
-                <input onClick={() => this.handleCheckbox(e.id)} type="checkbox" id={e.specialtie_name} key={e.id} name={e.specialtie_name} ></input>
+                <div key={e.id}>
+                <input onClick={() => this.handleCheckbox(e.id)} type="checkbox" id={e.specialtie_name}  name={e.specialtie_name} ></input>
                 <label htmlFor={e.id}>{e.specialtie_name}</ label><br/>
                 </div>
               ))
